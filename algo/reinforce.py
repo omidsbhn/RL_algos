@@ -12,7 +12,6 @@ class REINFORCE(model):
         self.optimizer = optim.Adam(self.parameters(), lr=alpha)
 
     def get_action(self, state):
-        print("----")
         state = Variable(torch.Tensor(state))
         state = torch.unsqueeze(state, 0)
         probs = self.forward(state)
@@ -34,7 +33,7 @@ class REINFORCE(model):
         # r_tt represents r_{t+1}
         for s_t, a_t, r_tt in zip(states[::-1], actions[::-1], rewards[::-1]):
             G = Variable(torch.Tensor([r_tt])) + self.gamma * G
-            loss = (-1.0) * G * torch.log(self.pi(s_t, a_t))
+            loss = (-1.0) * self.gamma * G * torch.log(self.pi(s_t, a_t))
 
             # update policy parameter \theta
             self.optimizer.zero_grad()

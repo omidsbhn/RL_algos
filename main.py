@@ -5,7 +5,7 @@ import gym
 import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
-MAX_EPISODES = 1
+MAX_EPISODES = 1500
 
 
 writer = SummaryWriter()
@@ -29,8 +29,8 @@ def main():
             rewards.append(reward)
             t += 1
             if done or terminate:
-                # writer.add_scalar("Episode/Reward", sum(rewards), i_episode)
-                # writer.add_scalar("Episode/Length", t, i_episode)
+                writer.add_scalar("Episode/Reward", sum(rewards), i_episode)
+                writer.add_scalar("Episode/Length", t, i_episode)
                 break
 
         agent.update_weight(states, actions, rewards)
