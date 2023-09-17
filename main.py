@@ -1,9 +1,9 @@
 from __future__ import print_function
-from algo.reinforce import REINFORCE
+from algo.reinforce import REINFORCE, ReinforceWithBaseline
 import gym
 import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
-
+from tqdm import tqdm
 MAX_EPISODES = 1500
 
 
@@ -12,16 +12,16 @@ writer = SummaryWriter()
 
 def main():
     env = gym.make('CartPole-v1')
-    agent = REINFORCE(env.observation_space.shape[0], 2)
+    agent = ReinforceWithBaseline(env.observation_space.shape[0], 2)
     rew = []
-    for i_episode in range(MAX_EPISODES):
+    for i_episode in tqdm(range(MAX_EPISODES)):
         state, _ = env.reset()
         states = []
         actions = []
         rewards = [0]  # no reward at t = 0
         t = 0
         while True:
-            action = agent.get_action(state)
+            action = agent.get_action(state).cpu()
             states.append(state)
             actions.append(action)
             state, reward, done, terminate, _ = env.step(action.numpy())
